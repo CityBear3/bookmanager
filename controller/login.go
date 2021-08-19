@@ -11,7 +11,7 @@ import (
 
 func Login(c *gin.Context) {
 	/*
-		uid: string ユーザーID
+		uid: string ユーザーID Repository実装までは使用しない
 		password: string パスワード
 	*/
 	var _ = c.PostForm("uid")
