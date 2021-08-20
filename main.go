@@ -4,6 +4,7 @@ import (
 	"app/handler"
 	"app/middleware"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,8 @@ import (
 
 func main() {
 	router := gin.Default()
+
+	router.Use(cors.Default())
 
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
