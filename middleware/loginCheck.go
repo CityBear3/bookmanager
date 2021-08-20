@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
@@ -13,8 +12,9 @@ func LoginCheck() gin.HandlerFunc {
 		//sessionを取得
 		session := sessions.Default(c)
 
+		//sessionからuidを取得
 		uid := session.Get("sessionId")
-		fmt.Println(uid)
+
 		if uid == nil {
 			c.Status(http.StatusUnauthorized)
 			c.Abort()
