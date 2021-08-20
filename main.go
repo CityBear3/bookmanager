@@ -1,7 +1,7 @@
 package main
 
 import (
-	"app/controller"
+	"app/handler"
 	"app/middleware"
 	"net/http"
 
@@ -21,7 +21,7 @@ func main() {
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("mysession", store))
 
-	router.POST("/login", controller.Login)
+	router.POST("/login", handler.Login)
 
 	authGroup := router.Group("/auth")
 	authGroup.Use(middleware.LoginCheck())
