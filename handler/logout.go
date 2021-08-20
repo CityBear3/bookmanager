@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +15,5 @@ func Logout(c *gin.Context) {
 	session.Clear()
 	session.Save()
 
-	//リダイレクト
-	c.Redirect(301, "/")
+	c.Status(http.StatusOK)
 }
