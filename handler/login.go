@@ -32,6 +32,10 @@ func Login(c *gin.Context) {
 		//sessionを取得
 		var session = sessions.Default(c)
 
+		var option = sessions.Options{SameSite: http.SameSiteLaxMode}
+
+		session.Options(option)
+
 		//session idとuidを紐付け
 		session.Set("sessionId", user.Uid)
 		session.Save()
