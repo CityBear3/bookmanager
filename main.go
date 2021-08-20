@@ -3,7 +3,6 @@ package main
 import (
 	"app/handler"
 	"app/middleware"
-	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -14,8 +13,9 @@ func main() {
 	router := gin.Default()
 
 	router.GET("/", func(c *gin.Context) {
-		names := []string{"John", "Jane"}
-		c.SecureJSON(http.StatusOK, names)
+		c.JSON(200, gin.H{
+			"message": "Welcome!!",
+		})
 	})
 
 	store := cookie.NewStore([]byte("secret"))
@@ -31,6 +31,8 @@ func main() {
 				"message": "Hello, World!!",
 			})
 		})
+
+		authGroup.POST("/logout", handler.Logout)
 	}
 
 	router.Run("127.0.0.1:8080")
