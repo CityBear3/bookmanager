@@ -1,6 +1,7 @@
 package model
 
 type User struct {
-	Uid      string
-	Password string
+	Id       uint   `gorm:"primary_key"`
+	Uid      string `gorm:"column:uid"`
+	Password string `gorm:"column:password"`
 }
