@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:latest
+    ports:
+      - "127.0.0.1:53306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: testPassword
+      MYSQL_DATABASE: testDB
