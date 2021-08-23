@@ -25,6 +25,7 @@ func main() {
 	router.Use(sessions.Sessions("mysession", store))
 
 	router.POST("/login", handler.Login)
+	router.POST("/registration", handler.Registration)
 
 	authGroup := router.Group("/auth")
 	authGroup.Use(middleware.LoginCheck())
