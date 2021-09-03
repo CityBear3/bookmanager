@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"app/aop"
 	"app/model"
 	"log"
 	"net/http"
@@ -19,24 +18,16 @@ func Login(c *gin.Context) {
 	var uid = c.PostForm("uid")
 	var password = c.PostForm("password")
 
-	db, err := aop.Connect()
-	if err != nil {
-		c.Status(http.StatusUnauthorized)
+	userSchema := model.User{Uid: uid}
+	if err := userSchema.GetUserById(); err != nil {
+		log.Println(err)
+		c.JSON(403, gin.H{
+			"message": err.Error(),
+		})
 	}
-
-	dbCloser, err := db.DB()
-	if err != nil {
-		c.Status(http.StatusInternalServerError)
-	}
-	defer dbCloser.Close()
-
-	user := model.User{Uid: uid}
-	db.Find(&user)
-	db.Logger.LogMode(4)
 
 	//パスワードを比較
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(userSchema.Password), []byte(password)); err != nil {
 		log.Fatalln(err)
 		c.Status(http.StatusForbidden)
 	} else {
@@ -48,7 +39,7 @@ func Login(c *gin.Context) {
 		session.Options(option)
 
 		//session idとuidを紐付け
-		session.Set("sessionId", user.Uid)
+		session.Set("sessionId", userSchema.Uid)
 		session.Save()
 	}
 }
