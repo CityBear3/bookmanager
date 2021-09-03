@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +11,14 @@ func Logout(c *gin.Context) {
 
 	//sessionをクリア
 	session.Clear()
-	session.Save()
+	err := session.Save()
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+	}
 
-	c.Status(http.StatusOK)
+	c.JSON(200, gin.H{
+		"message": "Your logout was succeed.",
+	})
 }

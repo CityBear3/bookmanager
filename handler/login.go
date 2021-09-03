@@ -28,8 +28,10 @@ func Login(c *gin.Context) {
 
 	//パスワードを比較
 	if err := bcrypt.CompareHashAndPassword([]byte(userSchema.Password), []byte(password)); err != nil {
-		log.Fatalln(err)
-		c.Status(http.StatusForbidden)
+		log.Println(err)
+		c.JSON(403, gin.H{
+			"message": err.Error(),
+		})
 	} else {
 		//sessionを取得
 		var session = sessions.Default(c)
@@ -42,4 +44,7 @@ func Login(c *gin.Context) {
 		session.Set("sessionId", userSchema.Uid)
 		session.Save()
 	}
+	c.JSON(200, gin.H{
+		"message": "Your login was succeed.",
+	})
 }
