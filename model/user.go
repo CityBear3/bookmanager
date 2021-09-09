@@ -11,6 +11,11 @@ type User struct {
 	Password string `gorm:"column:password"`
 }
 
+type UserRequest struct {
+	Uid      string `json:"uid"`
+	Password string `json:"password"`
+}
+
 func (u *User) GetUserById() error {
 	db, err := aop.Connect()
 	if err != nil {
