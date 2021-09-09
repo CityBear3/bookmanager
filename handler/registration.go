@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"app/aop"
 	"app/model"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 func Registration(c *gin.Context) {
@@ -16,15 +18,26 @@ func Registration(c *gin.Context) {
 			"message": err.Error(),
 		})
 	}
+
 	userSchema := model.User{Uid: uid, Password: string(hash)}
-	e := userSchema.RegisterUser()
+	db, err := aop.Connect()
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": err.Error(),
+		})
+	}
+
+	e := aop.ExecuteCreateQuery(db, func(tx *gorm.DB) error {
+		return userSchema.CreateUser(tx)
+	})
+
 	if e != nil {
 		c.JSON(500, gin.H{
 			"message": e.Error(),
 		})
+	} else {
+		c.JSON(200, gin.H{
+			"message": "User register was succeed.",
+		})
 	}
-
-	c.JSON(200, gin.H{
-		"message": "User register was succeed.",
-	})
 }

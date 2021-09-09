@@ -2,6 +2,7 @@ package model
 
 import (
 	"app/aop"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -28,18 +29,12 @@ func (u *User) GetUserById() error {
 	return nil
 }
 
-func (u *User) RegisterUser() error {
-	db, err := aop.Connect()
-	if err != nil {
-		return err
-	}
-
+func (u *User) CreateUser(db *gorm.DB) error {
 	dbCloser, err := db.DB()
 	if err != nil {
 		return err
 	}
 	defer dbCloser.Close()
 
-	db.Create(u)
-	return nil
+	return db.Create(u).Error
 }
