@@ -12,26 +12,32 @@ import (
 
 func Login(c *gin.Context) {
 	/*
-		uid: string ユーザーID Repository実装までは使用しない
+		uid: string ユーザーID
 		password: string パスワード
 	*/
-	var uid = c.PostForm("uid")
-	var password = c.PostForm("password")
+	var requestBody model.UserRequest
+	if err := c.ShouldBindJSON(&requestBody); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	userSchema := model.User{Uid: uid}
+	userSchema := model.User{Uid: requestBody.Uid}
 	if err := userSchema.GetUserById(); err != nil {
-		log.Println(err)
 		c.JSON(403, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 
 	//パスワードを比較
-	if err := bcrypt.CompareHashAndPassword([]byte(userSchema.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(userSchema.Password), []byte(requestBody.Password)); err != nil {
 		log.Println(err)
 		c.JSON(403, gin.H{
-			"message": err.Error(),
+			"error": err.Error(),
 		})
+		return
 	} else {
 		//sessionを取得
 		var session = sessions.Default(c)
